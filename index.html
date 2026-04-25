@@ -22,6 +22,7 @@
       --radius-lg: 1.5rem;
       --radius-md: 1rem;
       --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      --whatsapp-green: #25D366;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -71,10 +72,11 @@
       width: 130px; height: 130px; border-radius: 50%; object-fit: cover;
       border: 4px solid var(--accent); box-shadow: 0 10px 25px rgba(99,102,241,0.3);
       transition: transform var(--transition);
+      cursor: pointer;
     }
     .profile-pic:hover { transform: scale(1.04); }
 
-    /* إطار الاسم المتحرك بدون خلفية */
+    /* إطار الاسم المتحرك */
     .name-wrapper {
       display: inline-block;
       margin: 0.5rem auto 0.8rem;
@@ -143,7 +145,7 @@
 
     .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 1.3rem; }
 
-    /* قسم حسابات التواصل - خلفية بنفسجية فاتحة */
+    /* قسم حسابات التواصل - بنفسجي فاتح */
     .social-section {
       background: #ede9fe;
       border-radius: var(--radius-lg);
@@ -172,7 +174,7 @@
     .social-card i { font-size: 1.4rem; }
     .social-card:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
 
-    /* إنجازات */
+    /* بطاقات الإنجازات */
     .achievement-card {
       background: linear-gradient(145deg, rgba(99,102,241,0.12), transparent);
       border: 1px solid var(--border); border-radius: var(--radius-md);
@@ -196,7 +198,41 @@
     .gallery-info .date { font-size: 0.8rem; color: var(--accent); }
 
     footer { text-align: center; padding: 2rem 1rem; color: var(--text-secondary); font-size: 0.9rem; }
-    footer a { color: var(--accent); text-decoration: none; margin: 0 0.5rem; }
+    footer a { color: var(--accent); text-decoration: none; margin: 0 0.5rem; cursor: pointer; }
+
+    /* نافذة منبثقة (مودال) */
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.7); z-index: 10000;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; visibility: hidden; transition: 0.3s;
+    }
+    .modal-overlay.active { opacity: 1; visibility: visible; }
+    .modal {
+      background: var(--surface); color: var(--text);
+      border-radius: var(--radius-lg); padding: 2rem;
+      max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+      position: relative;
+    }
+    .modal-close {
+      position: absolute; top: 1rem; left: 1rem;
+      background: transparent; border: none; color: var(--text-secondary);
+      font-size: 1.5rem; cursor: pointer; transition: color 0.2s;
+    }
+    .modal-close:hover { color: var(--accent); }
+    .modal h2 { margin-bottom: 1rem; font-size: 1.6rem; color: var(--accent); }
+    .modal p, .modal ol, .modal ul { margin-bottom: 1rem; line-height: 1.8; }
+
+    /* تأثيرات النقر على الصورة */
+    .floating-emoji {
+      position: fixed; pointer-events: none; z-index: 9998;
+      font-size: 1.5rem; animation: floatAway 1.2s ease-out forwards;
+    }
+    @keyframes floatAway {
+      0% { opacity: 1; transform: translate(0,0) scale(1); }
+      100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0.3); }
+    }
 
     @media (max-width: 600px) {
       .hero h1 { font-size: 1.25rem; }
@@ -216,7 +252,7 @@
 
   <div class="container" id="mainContent">
     <div class="hero">
-      <div class="profile-pic-wrapper">
+      <div class="profile-pic-wrapper" id="profilePicWrapper">
         <img id="profileImage" src="https://placehold.co/300x300/e2e8f0/6366f1?text=😎" alt="صورتي" class="profile-pic">
       </div>
       <div class="name-wrapper">
@@ -234,10 +270,47 @@
     <footer>
       <p>© <span id="currentYear"></span> جميع الحقوق محفوظة.</p>
       <div>
-        <a href="#" id="privacyLink">سياسة الخصوصية</a> |
-        <a href="#" id="termsLink">شروط الاستخدام</a>
+        <a id="privacyLink">سياسة الخصوصية</a> |
+        <a id="termsLink">شروط الاستخدام</a>
       </div>
     </footer>
+  </div>
+
+  <!-- مودال السياسة -->
+  <div class="modal-overlay" id="privacyModal">
+    <div class="modal">
+      <button class="modal-close" id="closePrivacyModal"><i class="fas fa-times"></i></button>
+      <h2>سياسة الخصوصية</h2>
+      <p><strong>آخر تحديث: 2026/4/25</strong></p>
+      <p>نحن نحترم خصوصيتك ونؤكد أن هذا الموقع هو موقع شخصي يهدف فقط إلى عرض المحتوى (مثل الحسابات، الإنجازات، والصور)، ولا يقوم بجمع أو تخزين بيانات شخصية للمستخدمين.</p>
+      <ol>
+        <li><strong>عدم جمع البيانات</strong><br>لا نقوم بجمع أي معلومات شخصية مثل: الاسم، البريد الإلكتروني، رقم الهاتف. كما لا يوجد نظام تسجيل أو إدخال بيانات داخل الموقع.</li>
+        <li><strong>البيانات التقنية البسيطة</strong><br>قد يتم تلقائيًا جمع بعض المعلومات التقنية من قبل مزود الخدمة أو السيرفر، مثل: عنوان IP، نوع المتصفح، نوع الجهاز. وهذه المعلومات تُستخدم فقط لأغراض تقنية (مثل تحسين الأداء) ولا يتم استخدامها لتحديد هوية المستخدم.</li>
+        <li><strong>ملفات تعريف الارتباط (Cookies)</strong><br>هذا الموقع لا يستخدم ملفات تعريف الارتباط (Cookies) لتتبع المستخدمين.</li>
+        <li><strong>الروابط الخارجية</strong><br>قد يحتوي الموقع على روابط تؤدي إلى مواقع خارجية (مثل حسابات التواصل الاجتماعي). نحن غير مسؤولين عن سياسات الخصوصية الخاصة بهذه المواقع.</li>
+        <li><strong>حماية المستخدم</strong><br>نظرًا لعدم جمع بيانات شخصية، فإن مخاطر استخدام البيانات تكاد تكون معدومة.</li>
+        <li><strong>التعديلات</strong><br>قد يتم تحديث سياسة الخصوصية هذه من وقت لآخر، وسيتم نشر أي تغييرات في هذه الصفحة.</li>
+        <li><strong>الموافقة</strong><br>باستخدامك لهذا الموقع، فإنك توافق على هذه السياسة.</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- مودال الشروط -->
+  <div class="modal-overlay" id="termsModal">
+    <div class="modal">
+      <button class="modal-close" id="closeTermsModal"><i class="fas fa-times"></i></button>
+      <h2>شروط الاستخدام</h2>
+      <p><strong>آخر تحديث: 2026/4/25</strong></p>
+      <p>يرجى قراءة هذه الشروط بعناية قبل استخدام الموقع.</p>
+      <ol>
+        <li><strong>قبول الشروط</strong><br>باستخدامك لهذا الموقع، فإنك توافق على الالتزام بهذه الشروط.</li>
+        <li><strong>استخدام الموقع</strong><br>يُستخدم الموقع لأغراض شخصية فقط. يُمنع استخدام الموقع لأي نشاط غير قانوني أو ضار.</li>
+        <li><strong>المحتوى</strong><br>جميع المحتويات المنشورة (النصوص، الصور، الإنجازات) هي ملك لصاحب الموقع. لا يجوز نسخ أو إعادة نشر المحتوى دون إذن مسبق.</li>
+        <li><strong>المسؤولية</strong><br>نحن غير مسؤولين عن أي أضرار ناتجة عن استخدام الموقع. يتم تقديم المحتوى "كما هو" بدون أي ضمانات.</li>
+        <li><strong>التعديلات</strong><br>يحق لنا تعديل هذه الشروط في أي وقت دون إشعار مسبق، ويُعتبر استمرارك باستخدام الموقع موافقة على التعديلات.</li>
+        <li><strong>إيقاف الاستخدام</strong><br>يحق لنا منع أي مستخدم يخالف الشروط من استخدام الموقع.</li>
+      </ol>
+    </div>
   </div>
 
   <script type="module">
@@ -260,12 +333,13 @@
     const db = getDatabase(app);
     getAnalytics(app);
 
-    // الحسابات الافتراضية الثابتة
+    // الحسابات الافتراضية الثابتة (مع إضافة واتساب)
     const DEFAULT_SOCIAL_LINKS = [
       { platform: "Instagram", url: "https://www.instagram.com/ahmed.h.takleef?igsh=Y3QwMThwN2pxemJ6", icon: "fab fa-instagram", color: "linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888)" },
       { platform: "Facebook", url: "https://www.facebook.com/AHMED.H.TAKLIF?mibextid=ZbWKwL", icon: "fab fa-facebook", color: "#1877f2" },
       { platform: "Threads", url: "https://www.threads.com/@ahmed.h.takleef", icon: "fab fa-threads", color: "#ffffff", textColor: "#000000" },
-      { platform: "Telegram", url: "https://t.me/ily_no1", icon: "fab fa-telegram-plane", color: "#0088cc" }
+      { platform: "Telegram", url: "https://t.me/ily_no1", icon: "fab fa-telegram-plane", color: "#0088cc" },
+      { platform: "WhatsApp", url: "https://wa.me/9647812785053", icon: "fab fa-whatsapp", color: "#25D366" }
     ];
 
     const loadingScreen = document.getElementById('loadingScreen');
@@ -293,11 +367,10 @@
     }
 
     function getSocialLinks(data) {
-      if (data.socialLinksOrder && data.socialLinksOrder.length === 4) {
+      if (data.socialLinksOrder && data.socialLinksOrder.length === DEFAULT_SOCIAL_LINKS.length) {
         return data.socialLinksOrder.map(platform => DEFAULT_SOCIAL_LINKS.find(l => l.platform === platform)).filter(Boolean);
       }
-      if (data.socialLinks && data.socialLinks.length === 4) {
-        // قديمة
+      if (data.socialLinks && data.socialLinks.length === DEFAULT_SOCIAL_LINKS.length) {
         return data.socialLinks;
       }
       return DEFAULT_SOCIAL_LINKS;
@@ -307,21 +380,18 @@
       const container = document.getElementById('sectionsContainer');
       container.innerHTML = '';
 
-      // حسابات التواصل
       const social = getSocialLinks(data);
       const socialSec = document.createElement('div');
-      socialSec.className = 'social-section'; // لاحظ ليس section ليكون بلون مختلف
+      socialSec.className = 'social-section';
       socialSec.innerHTML = buildSocialSection(social);
       container.appendChild(socialSec);
 
-      // من أنا
       if (data.about && data.about.content) {
         const sec = document.createElement('div'); sec.className = 'section';
         sec.innerHTML = `<div class="section-title"><i class="fas fa-user"></i> من أنا</div><p>${data.about.content}</p>`;
         container.appendChild(sec);
       }
 
-      // إنجازاتي
       const achievements = data.achievements || [];
       if (achievements.length) {
         const sec = document.createElement('div'); sec.className = 'section';
@@ -329,7 +399,6 @@
         container.appendChild(sec);
       }
 
-      // المعرض
       const gallery = data.gallery || [];
       if (gallery.length) {
         const sec = document.createElement('div'); sec.className = 'section';
@@ -337,7 +406,6 @@
         container.appendChild(sec);
       }
 
-      // باقي الأقسام لو وجدت
       if (data.projects && data.projects.length) {
         const sec = document.createElement('div'); sec.className = 'section';
         sec.innerHTML = buildProjectsSection(data.projects);
@@ -409,6 +477,27 @@
       });
     }
 
+    // تأثير النقر على الصورة (قلوب ونجوم)
+    function setupProfileClickEffect() {
+      const img = document.getElementById('profileImage');
+      if (!img) return;
+      const emojis = ['❤️', '⭐', '💜', '✨', '💙'];
+      img.addEventListener('click', (e) => {
+        const count = 5 + Math.floor(Math.random() * 5);
+        for (let i = 0; i < count; i++) {
+          const span = document.createElement('span');
+          span.className = 'floating-emoji';
+          span.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+          span.style.left = (e.clientX + (Math.random() - 0.5) * 100) + 'px';
+          span.style.top = (e.clientY + (Math.random() - 0.5) * 60) + 'px';
+          span.style.setProperty('--tx', (Math.random() - 0.5) * 120 + 'px');
+          span.style.setProperty('--ty', (Math.random() * -120 - 30) + 'px');
+          document.body.appendChild(span);
+          span.addEventListener('animationend', () => span.remove());
+        }
+      });
+    }
+
     function createParticles() {
       const bg = document.getElementById('animatedBg');
       for (let i=0; i<18; i++) {
@@ -427,8 +516,24 @@
       } catch(e) {}
     }
 
+    // المودالات
+    function setupModals() {
+      const privacyModal = document.getElementById('privacyModal');
+      const termsModal = document.getElementById('termsModal');
+      document.getElementById('privacyLink').addEventListener('click', () => privacyModal.classList.add('active'));
+      document.getElementById('termsLink').addEventListener('click', () => termsModal.classList.add('active'));
+      document.getElementById('closePrivacyModal').addEventListener('click', () => privacyModal.classList.remove('active'));
+      document.getElementById('closeTermsModal').addEventListener('click', () => termsModal.classList.remove('active'));
+      window.addEventListener('click', (e) => {
+        if (e.target === privacyModal) privacyModal.classList.remove('active');
+        if (e.target === termsModal) termsModal.classList.remove('active');
+      });
+    }
+
     window.addEventListener('DOMContentLoaded', async () => {
       createParticles();
+      setupProfileClickEffect();
+      setupModals();
       try {
         const data = await loadSiteData();
         applySiteSettings(data);
