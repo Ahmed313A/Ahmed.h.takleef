@@ -22,7 +22,30 @@
       --radius-lg: 1.5rem;
       --radius-md: 1rem;
       --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-      --whatsapp-green: #25D366;
+    }
+
+    /* ===== حماية المحتوى ===== */
+    * {
+      user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+    }
+    img {
+      -webkit-user-drag: none;
+      -khtml-user-drag: none;
+      -moz-user-drag: none;
+      -o-user-drag: none;
+      user-drag: none;
+      pointer-events: auto; /* نسمح بالنقر للأيقونات ولكن المنع من السحب */
+    }
+    /* منع ظل النص عند الضغط */
+    * {
+      -webkit-tap-highlight-color: transparent;
+    }
+    /* منع تحديد النص في المتصفحات القديمة */
+    body {
+      -webkit-touch-callout: none;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -73,10 +96,12 @@
       border: 4px solid var(--accent); box-shadow: 0 10px 25px rgba(99,102,241,0.3);
       transition: transform var(--transition);
       cursor: pointer;
+      /* نمنع السحب مرة أخرى */
+      pointer-events: auto;
+      -webkit-user-drag: none;
     }
     .profile-pic:hover { transform: scale(1.04); }
 
-    /* إطار الاسم المتحرك */
     .name-wrapper {
       display: inline-block;
       margin: 0.5rem auto 0.8rem;
@@ -145,7 +170,6 @@
 
     .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 1.3rem; }
 
-    /* قسم حسابات التواصل - بنفسجي فاتح */
     .social-section {
       background: #ede9fe;
       border-radius: var(--radius-lg);
@@ -166,6 +190,8 @@
       min-width: 140px;
       border: 2px solid transparent;
       animation: cardGlow 4s infinite alternate;
+      user-select: none;
+      -webkit-user-drag: none;
     }
     @keyframes cardGlow {
       0% { border-color: rgba(255,255,255,0.2); box-shadow: 0 0 8px currentColor; }
@@ -174,7 +200,6 @@
     .social-card i { font-size: 1.4rem; }
     .social-card:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
 
-    /* بطاقات الإنجازات */
     .achievement-card {
       background: linear-gradient(145deg, rgba(99,102,241,0.12), transparent);
       border: 1px solid var(--border); border-radius: var(--radius-md);
@@ -187,7 +212,6 @@
     }
     .achievement-card h3 { margin-bottom: 0.5rem; color: var(--accent); }
 
-    /* معرض */
     .gallery-card {
       background: var(--surface); border-radius: var(--radius-md); overflow: hidden;
       border: 1px solid var(--border); transition: all var(--transition);
@@ -200,7 +224,7 @@
     footer { text-align: center; padding: 2rem 1rem; color: var(--text-secondary); font-size: 0.9rem; }
     footer a { color: var(--accent); text-decoration: none; margin: 0 0.5rem; cursor: pointer; }
 
-    /* نافذة منبثقة (مودال) */
+    /* مودال */
     .modal-overlay {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(0,0,0,0.7); z-index: 10000;
@@ -218,13 +242,12 @@
     .modal-close {
       position: absolute; top: 1rem; left: 1rem;
       background: transparent; border: none; color: var(--text-secondary);
-      font-size: 1.5rem; cursor: pointer; transition: color 0.2s;
+      font-size: 1.5rem; cursor: pointer;
     }
     .modal-close:hover { color: var(--accent); }
     .modal h2 { margin-bottom: 1rem; font-size: 1.6rem; color: var(--accent); }
     .modal p, .modal ol, .modal ul { margin-bottom: 1rem; line-height: 1.8; }
 
-    /* تأثيرات النقر على الصورة */
     .floating-emoji {
       position: fixed; pointer-events: none; z-index: 9998;
       font-size: 1.5rem; animation: floatAway 1.2s ease-out forwards;
@@ -253,7 +276,7 @@
   <div class="container" id="mainContent">
     <div class="hero">
       <div class="profile-pic-wrapper" id="profilePicWrapper">
-        <img id="profileImage" src="https://placehold.co/300x300/e2e8f0/6366f1?text=😎" alt="صورتي" class="profile-pic">
+        <img id="profileImage" src="https://placehold.co/300x300/e2e8f0/6366f1?text=😎" alt="صورتي" class="profile-pic" draggable="false">
       </div>
       <div class="name-wrapper">
         <h1 id="siteName">اسمك هنا</h1>
@@ -276,7 +299,7 @@
     </footer>
   </div>
 
-  <!-- مودال السياسة -->
+  <!-- مودالات -->
   <div class="modal-overlay" id="privacyModal">
     <div class="modal">
       <button class="modal-close" id="closePrivacyModal"><i class="fas fa-times"></i></button>
@@ -295,7 +318,6 @@
     </div>
   </div>
 
-  <!-- مودال الشروط -->
   <div class="modal-overlay" id="termsModal">
     <div class="modal">
       <button class="modal-close" id="closeTermsModal"><i class="fas fa-times"></i></button>
@@ -312,6 +334,61 @@
       </ol>
     </div>
   </div>
+
+  <!-- ===== سكريبت الحماية ===== -->
+  <script>
+    (function() {
+      // منع كلك يمين
+      document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+        return false;
+      });
+
+      // منع اختصارات النسخ والقص واللصق والتحديد وحفظ الصفحة
+      document.addEventListener('keydown', function(e) {
+        if (e.ctrlKey || e.metaKey) {
+          const key = e.key.toLowerCase();
+          if (key === 'c' || key === 'x' || key === 'v' || key === 'a' || key === 'u' || key === 's' || key === 'p') {
+            e.preventDefault();
+            return false;
+          }
+        }
+      });
+
+      // منع عمليات النسخ والقص واللصق عبر الأحداث
+      document.addEventListener('copy', function(e) { e.preventDefault(); });
+      document.addEventListener('cut', function(e) { e.preventDefault(); });
+      document.addEventListener('paste', function(e) { e.preventDefault(); });
+
+      // منع سحب العناصر (خاصة الصور)
+      document.addEventListener('dragstart', function(e) {
+        e.preventDefault();
+        return false;
+      });
+
+      // منع تحديد النص (مزيد من التأكيد)
+      document.addEventListener('selectstart', function(e) {
+        e.preventDefault();
+        return false;
+      });
+
+      // منع الضغط المطول على الأجهزة اللمسية (يؤدي للنسخ أو القوائم)
+      document.addEventListener('touchstart', function(e) {
+        if (e.target.tagName === 'IMG' || e.target.tagName === 'A' || e.target.tagName === 'BUTTON') return;
+        // لا نمنع اللمس على العناصر التفاعلية لضمان عمل الأزرار والروابط
+      }, { passive: false });
+
+      // منع سحب الصور باللمس (إضافي)
+      document.addEventListener('touchmove', function(e) {
+        if (e.target.tagName === 'IMG' && e.target.draggable !== false) {
+          e.preventDefault();
+        }
+      }, { passive: false });
+
+      // تعطيل جر الصور من خلال attribute
+      document.querySelectorAll('img').forEach(img => img.setAttribute('draggable', 'false'));
+    })();
+  </script>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
@@ -333,7 +410,6 @@
     const db = getDatabase(app);
     getAnalytics(app);
 
-    // الحسابات الافتراضية الثابتة (مع إضافة واتساب)
     const DEFAULT_SOCIAL_LINKS = [
       { platform: "Instagram", url: "https://www.instagram.com/ahmed.h.takleef?igsh=Y3QwMThwN2pxemJ6", icon: "fab fa-instagram", color: "linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888)" },
       { platform: "Facebook", url: "https://www.facebook.com/AHMED.H.TAKLIF?mibextid=ZbWKwL", icon: "fab fa-facebook", color: "#1877f2" },
@@ -430,12 +506,11 @@
       links.forEach(link => {
         const style = link.color.includes('gradient') ? `background: ${link.color};` : `background: ${link.color};`;
         const textColor = link.textColor ? `color: ${link.textColor};` : '';
-        html += `<a href="${link.url}" target="_blank" class="social-card" style="${style}${textColor}">
+        html += `<a href="${link.url}" target="_blank" class="social-card" style="${style}${textColor}" draggable="false">
           <i class="${link.icon}"></i> ${link.platform}
         </a>`;
       });
-      html += '</div>';
-      return html;
+      return html + '</div>';
     }
 
     function buildAchievementsSection(items) {
@@ -446,13 +521,13 @@
 
     function buildGallerySection(items) {
       let html = `<div class="section-title"><i class="fas fa-images"></i> المعرض</div><div class="grid">`;
-      items.forEach(img => html += `<div class="gallery-card"><img src="${img.imageUrl}" alt="صورة"><div class="gallery-info"><p>${img.description||''}</p><div class="date">${img.date||''}</div></div></div>`);
+      items.forEach(img => html += `<div class="gallery-card"><img src="${img.imageUrl}" alt="صورة" draggable="false"><div class="gallery-info"><p>${img.description||''}</p><div class="date">${img.date||''}</div></div></div>`);
       return html + '</div>';
     }
 
     function buildProjectsSection(items) {
       let html = `<div class="section-title"><i class="fas fa-code"></i> المشاريع</div><div class="grid">`;
-      items.forEach(p => html += `<div style="background:var(--surface); border-radius:var(--radius-md); overflow:hidden; border:1px solid var(--border);"><img src="${p.image||'https://placehold.co/400x250/e2e8f0/6366f1?text=مشروع'}" style="width:100%;height:170px;object-fit:cover;"><div style="padding:1rem;"><h3>${p.title}</h3><p>${p.description}</p><a href="${p.link||'#'}" target="_blank" style="color:var(--accent);">تفاصيل</a></div></div>`);
+      items.forEach(p => html += `<div style="background:var(--surface); border-radius:var(--radius-md); overflow:hidden; border:1px solid var(--border);"><img src="${p.image||'https://placehold.co/400x250/e2e8f0/6366f1?text=مشروع'}" draggable="false" style="width:100%;height:170px;object-fit:cover;"><div style="padding:1rem;"><h3>${p.title}</h3><p>${p.description}</p><a href="${p.link||'#'}" target="_blank" style="color:var(--accent);">تفاصيل</a></div></div>`);
       return html + '</div>';
     }
 
@@ -464,7 +539,7 @@
 
     function buildStoreSection(products) {
       let html = `<div class="section-title"><i class="fas fa-store"></i> المتجر</div><div class="grid">`;
-      products.forEach(p => html += `<div style="background:var(--surface); border-radius:var(--radius-md); overflow:hidden; border:1px solid var(--border);"><img src="${(p.images&&p.images[0])||'https://placehold.co/400x250/e2e8f0/6366f1?text=منتج'}" style="width:100%;height:170px;object-fit:cover;"><div style="padding:1rem;"><h3>${p.name}</h3><p>${p.description}</p><div style="color:var(--accent); font-weight:700;">${p.price} ريال</div></div></div>`);
+      products.forEach(p => html += `<div style="background:var(--surface); border-radius:var(--radius-md); overflow:hidden; border:1px solid var(--border);"><img src="${(p.images&&p.images[0])||'https://placehold.co/400x250/e2e8f0/6366f1?text=منتج'}" draggable="false" style="width:100%;height:170px;object-fit:cover;"><div style="padding:1rem;"><h3>${p.name}</h3><p>${p.description}</p><div style="color:var(--accent); font-weight:700;">${p.price} ريال</div></div></div>`);
       return html + '</div>';
     }
 
@@ -477,7 +552,6 @@
       });
     }
 
-    // تأثير النقر على الصورة (قلوب ونجوم)
     function setupProfileClickEffect() {
       const img = document.getElementById('profileImage');
       if (!img) return;
@@ -516,7 +590,6 @@
       } catch(e) {}
     }
 
-    // المودالات
     function setupModals() {
       const privacyModal = document.getElementById('privacyModal');
       const termsModal = document.getElementById('termsModal');
