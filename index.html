@@ -7,6 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     :root {
@@ -24,35 +25,10 @@
       --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    /* ===== حماية المحتوى ===== */
-    * {
-      user-select: none;
-      -webkit-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
-    }
-    img {
-      -webkit-user-drag: none;
-      -khtml-user-drag: none;
-      -moz-user-drag: none;
-      -o-user-drag: none;
-      user-drag: none;
-    }
-    * {
-      -webkit-tap-highlight-color: transparent;
-    }
-    body {
-      -webkit-touch-callout: none;
-      font-family: var(--font-main);
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      background-color: var(--bg);
-      color: var(--text);
-      line-height: 1.7;
-      overflow-x: hidden;
-      position: relative;
-    }
+    * { user-select: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; }
+    img { -webkit-user-drag: none; -khtml-user-drag: none; -moz-user-drag: none; -o-user-drag: none; user-drag: none; }
+    * { -webkit-tap-highlight-color: transparent; }
+    body { -webkit-touch-callout: none; font-family: var(--font-main); margin: 0; padding: 0; box-sizing: border-box; background-color: var(--bg); color: var(--text); line-height: 1.7; overflow-x: hidden; position: relative; }
 
     .animated-bg {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -69,254 +45,171 @@
       100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
     }
 
+    /* ===== شاشة التحميل الجديدة ===== */
     .loading-screen {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: var(--surface); display: flex; align-items: center; justify-content: center;
-      z-index: 9999; transition: opacity 0.6s, visibility 0.6s;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: #2c3e50; /* أزرق رمادي */
+      background-image: radial-gradient(circle at 50% 40%, rgba(255,255,255,0.08) 0%, transparent 60%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.8s ease, visibility 0.8s ease, transform 0.8s ease;
+      animation: bgPulse 3s ease-in-out infinite alternate;
     }
-    .loading-screen.hidden { opacity: 0; visibility: hidden; }
-    .loader-logo { text-align: center; animation: pulse 1.8s infinite; }
-    .loader-logo i { font-size: 4rem; color: var(--accent); margin-bottom: 0.5rem; }
-    @keyframes pulse {
-      0% { transform: scale(0.96); opacity: 0.7; }
-      50% { transform: scale(1.05); opacity: 1; }
-      100% { transform: scale(0.96); opacity: 0.7; }
+    @keyframes bgPulse {
+      0% { background-color: #2c3e50; }
+      100% { background-color: #34495e; }
     }
-
-    /* ===== المحتوى الأساسي ===== */
-    .main-content-wrapper {
-      transition: opacity 0.4s ease, visibility 0.4s ease;
-    }
-    .main-content-wrapper.offline-hidden {
+    .loading-screen.hidden {
       opacity: 0;
       visibility: hidden;
-      pointer-events: none;
+      transform: translateY(-20px);
     }
 
-    .container { max-width: 900px; margin: 0 auto; padding: 1.25rem; }
+    .loader-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 6rem;
+      font-weight: 700;
+      color: #d4af37; /* ذهبي */
+      text-shadow: 0 0 20px rgba(212, 175, 55, 0.7), 0 0 40px rgba(212, 175, 55, 0.4);
+      letter-spacing: -2px;
+      position: relative;
+      margin-bottom: 1.5rem;
+      animation: fadeInZoom 1.2s ease-out;
+    }
+    .loader-logo::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60%;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, #d4af37, transparent);
+      border-radius: 2px;
+    }
+    @keyframes fadeInZoom {
+      0% { opacity: 0; transform: scale(0.7); }
+      100% { opacity: 1; transform: scale(1); }
+    }
 
+    .welcome-text {
+      font-family: var(--font-main);
+      font-size: 1.5rem;
+      color: #ffffff;
+      font-weight: 300;
+      margin-bottom: 0.8rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.6s forwards;
+    }
+    .loading-text {
+      font-family: var(--font-main);
+      font-size: 0.9rem;
+      color: #b0c4de;
+      margin-bottom: 2rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 1s forwards;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .progress-bar {
+      width: 240px;
+      height: 6px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    }
+    .progress-fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, #a0c4ff, #ffffff);
+      border-radius: 10px;
+      animation: fillProgress 5s ease-in-out forwards;
+    }
+    @keyframes fillProgress {
+      0% { width: 0%; }
+      100% { width: 100%; }
+    }
+
+    /* بقية الأنماط كما هي دون تغيير */
+    .main-content-wrapper { transition: opacity 0.4s ease, visibility 0.4s ease; }
+    .main-content-wrapper.offline-hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+    .container { max-width: 900px; margin: 0 auto; padding: 1.25rem; }
     .hero { text-align: center; padding: 2.5rem 1rem 1.5rem; }
     .profile-pic-wrapper { display: inline-block; position: relative; margin-bottom: 1.8rem; }
     .profile-pic {
       width: 130px; height: 130px; border-radius: 50%; object-fit: cover;
       border: 4px solid var(--accent); box-shadow: 0 10px 25px rgba(99,102,241,0.3);
-      transition: transform var(--transition);
-      cursor: pointer;
+      transition: transform var(--transition); cursor: pointer;
     }
     .profile-pic:hover { transform: scale(1.04); }
-
-    .name-wrapper {
-      display: inline-block;
-      margin: 0.5rem auto 0.8rem;
-      padding: 0.3rem 2.2rem;
-      border-radius: 3rem;
-      position: relative;
-      background: transparent;
-    }
+    .name-wrapper { display: inline-block; margin: 0.5rem auto 0.8rem; padding: 0.3rem 2.2rem; border-radius: 3rem; position: relative; background: transparent; }
     .name-wrapper::before {
-      content: '';
-      position: absolute;
-      top: -2px; left: -2px; right: -2px; bottom: -2px;
-      border-radius: 3rem;
-      background: linear-gradient(45deg, var(--accent), #a78bfa, var(--accent));
-      z-index: -1;
-      background-size: 200% 200%;
-      animation: rotateBorder 4s linear infinite;
+      content: ''; position: absolute; top: -2px; left: -2px; right: -2px; bottom: -2px;
+      border-radius: 3rem; background: linear-gradient(45deg, var(--accent), #a78bfa, var(--accent));
+      z-index: -1; background-size: 200% 200%; animation: rotateBorder 4s linear infinite;
     }
-    @keyframes rotateBorder {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-    .hero h1 {
-      font-size: 1.5rem; font-weight: 700; letter-spacing: -0.3px;
-      color: var(--text);
-      position: relative;
-      background: var(--bg);
-      border-radius: 2.8rem;
-      padding: 0.4rem 1.5rem;
-      margin: 0;
-    }
-
-    .hero .description-lines {
-      color: var(--text-secondary);
-      font-size: 1.1rem;
-      max-width: 500px;
-      margin: 1rem auto 1.8rem;
-      line-height: 2;
-    }
+    @keyframes rotateBorder { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+    .hero h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.3px; color: var(--text); position: relative; background: var(--bg); border-radius: 2.8rem; padding: 0.4rem 1.5rem; margin: 0; }
+    .hero .description-lines { color: var(--text-secondary); font-size: 1.1rem; max-width: 500px; margin: 1rem auto 1.8rem; line-height: 2; }
     .description-lines p { margin: 0.3rem 0; }
-
-    .section {
-      background: var(--surface);
-      border-radius: var(--radius-lg);
-      padding: 1.8rem;
-      margin: 1.5rem 0;
-      box-shadow: var(--shadow-sm);
-      transition: all var(--transition);
-      opacity: 0;
-      transform: translateY(25px);
-      transition: opacity 0.6s ease, transform 0.6s ease;
-    }
+    .section { background: var(--surface); border-radius: var(--radius-lg); padding: 1.8rem; margin: 1.5rem 0; box-shadow: var(--shadow-sm); transition: all var(--transition); opacity: 0; transform: translateY(25px); transition: opacity 0.6s ease, transform 0.6s ease; }
     .section.visible { opacity: 1; transform: translateY(0); }
-    .section-title {
-      font-size: 1.5rem;
-      font-weight: 700;
-      margin-bottom: 1.5rem;
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-      border-bottom: 2px solid var(--border);
-      padding-bottom: 0.7rem;
-    }
+    .section-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.6rem; border-bottom: 2px solid var(--border); padding-bottom: 0.7rem; }
     .section-title i { color: var(--accent); }
-
     .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 1.3rem; }
-
-    .social-section {
-      background: #ede9fe;
-      border-radius: var(--radius-lg);
-      padding: 1.8rem;
-      margin: 1.5rem 0;
-      box-shadow: var(--shadow-sm);
-      color: #1f2937;
-    }
+    .social-section { background: #ede9fe; border-radius: var(--radius-lg); padding: 1.8rem; margin: 1.5rem 0; box-shadow: var(--shadow-sm); color: #1f2937; }
     .social-section .section-title { border-bottom-color: #c4b5fd; color: #4c1d95; }
     .social-section .section-title i { color: #7c3aed; }
-
     .social-cards { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; }
     .social-card {
-      display: flex; align-items: center; gap: 0.8rem;
-      padding: 0.8rem 1.5rem; border-radius: 2.5rem;
-      text-decoration: none; color: #fff; font-weight: 500;
-      transition: transform 0.3s, box-shadow 0.3s;
-      min-width: 140px;
-      border: 2px solid transparent;
-      animation: cardGlow 4s infinite alternate;
+      display: flex; align-items: center; gap: 0.8rem; padding: 0.8rem 1.5rem; border-radius: 2.5rem;
+      text-decoration: none; color: #fff; font-weight: 500; transition: transform 0.3s, box-shadow 0.3s;
+      min-width: 140px; border: 2px solid transparent; animation: cardGlow 4s infinite alternate;
     }
-    @keyframes cardGlow {
-      0% { border-color: rgba(255,255,255,0.2); box-shadow: 0 0 8px currentColor; }
-      100% { border-color: rgba(255,255,255,0.5); box-shadow: 0 0 18px currentColor; }
-    }
+    @keyframes cardGlow { 0% { border-color: rgba(255,255,255,0.2); box-shadow: 0 0 8px currentColor; } 100% { border-color: rgba(255,255,255,0.5); box-shadow: 0 0 18px currentColor; } }
     .social-card i { font-size: 1.4rem; }
     .social-card:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
-
-    .achievement-card {
-      background: linear-gradient(145deg, rgba(99,102,241,0.12), transparent);
-      border: 1px solid var(--border); border-radius: var(--radius-md);
-      padding: 1.4rem; transition: all 0.4s ease;
-    }
-    .achievement-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 20px rgba(99,102,241,0.2);
-      border-color: var(--accent);
-    }
+    .achievement-card { background: linear-gradient(145deg, rgba(99,102,241,0.12), transparent); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1.4rem; transition: all 0.4s ease; }
+    .achievement-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(99,102,241,0.2); border-color: var(--accent); }
     .achievement-card h3 { margin-bottom: 0.5rem; color: var(--accent); }
-
-    .gallery-card {
-      background: var(--surface); border-radius: var(--radius-md); overflow: hidden;
-      border: 1px solid var(--border); transition: all var(--transition);
-    }
+    .gallery-card { background: var(--surface); border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--border); transition: all var(--transition); }
     .gallery-card img { width: 100%; height: 200px; object-fit: cover; }
     .gallery-info { padding: 1rem; }
     .gallery-info p { color: var(--text-secondary); margin: 0.3rem 0; }
     .gallery-info .date { font-size: 0.8rem; color: var(--accent); }
-
     footer { text-align: center; padding: 2rem 1rem; color: var(--text-secondary); font-size: 0.9rem; }
     footer a { color: var(--accent); text-decoration: none; margin: 0 0.5rem; cursor: pointer; }
-
-    /* مودال */
-    .modal-overlay {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.7); z-index: 10000;
-      display: flex; align-items: center; justify-content: center;
-      opacity: 0; visibility: hidden; transition: 0.3s;
-    }
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 10000; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: 0.3s; }
     .modal-overlay.active { opacity: 1; visibility: visible; }
-    .modal {
-      background: var(--surface); color: var(--text);
-      border-radius: var(--radius-lg); padding: 2rem;
-      max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-      position: relative;
-    }
-    .modal-close {
-      position: absolute; top: 1rem; left: 1rem;
-      background: transparent; border: none; color: var(--text-secondary);
-      font-size: 1.5rem; cursor: pointer;
-    }
+    .modal { background: var(--surface); color: var(--text); border-radius: var(--radius-lg); padding: 2rem; max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto; box-shadow: 0 20px 40px rgba(0,0,0,0.5); position: relative; }
+    .modal-close { position: absolute; top: 1rem; left: 1rem; background: transparent; border: none; color: var(--text-secondary); font-size: 1.5rem; cursor: pointer; }
     .modal-close:hover { color: var(--accent); }
     .modal h2 { margin-bottom: 1rem; font-size: 1.6rem; color: var(--accent); }
     .modal p, .modal ol, .modal ul { margin-bottom: 1rem; line-height: 1.8; }
-
-    .floating-emoji {
-      position: fixed; pointer-events: none; z-index: 9998;
-      font-size: 1.5rem; animation: floatAway 1.2s ease-out forwards;
-    }
-    @keyframes floatAway {
-      0% { opacity: 1; transform: translate(0,0) scale(1); }
-      100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0.3); }
-    }
-
-    /* ===== صفحة Offline ===== */
+    .floating-emoji { position: fixed; pointer-events: none; z-index: 9998; font-size: 1.5rem; animation: floatAway 1.2s ease-out forwards; }
+    @keyframes floatAway { 0% { opacity: 1; transform: translate(0,0) scale(1); } 100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0.3); } }
+    /* صفحة Offline */
     .offline-page {
-      position: fixed;
-      top: 0; left: 0; width: 100vw; height: 100vh;
-      background: #ffffff;
-      z-index: 100000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      text-align: center;
-      padding: 2rem;
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 0.4s ease, visibility 0.4s ease;
-      color: #1f2937;
-      font-family: var(--font-main);
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: #ffffff; z-index: 100000; display: flex; align-items: center; justify-content: center;
+      flex-direction: column; text-align: center; padding: 2rem;
+      opacity: 0; visibility: hidden; transition: opacity 0.4s ease, visibility 0.4s ease;
+      color: #1f2937; font-family: var(--font-main);
     }
-    .offline-page.show {
-      opacity: 1;
-      visibility: visible;
-    }
-    .offline-icon {
-      font-size: 6rem;
-      margin-bottom: 1.5rem;
-      animation: float 3s ease-in-out infinite;
-      color: #6366f1;
-    }
-    @keyframes float {
-      0% { transform: translateY(0px); }
-      50% { transform: translateY(-10px); }
-      100% { transform: translateY(0px); }
-    }
-    .offline-text {
-      font-size: 1.4rem;
-      font-weight: 500;
-      color: #4b5563;
-      max-width: 500px;
-      margin-bottom: 2rem;
-      line-height: 1.8;
-    }
-    .offline-btn {
-      background: #6366f1;
-      color: white;
-      border: none;
-      padding: 0.9rem 2.5rem;
-      border-radius: 3rem;
-      font-family: var(--font-main);
-      font-weight: 600;
-      font-size: 1.1rem;
-      cursor: pointer;
-      transition: background 0.3s, transform 0.2s;
-      box-shadow: 0 10px 20px rgba(99,102,241,0.3);
-    }
-    .offline-btn:hover {
-      background: #4f46e5;
-      transform: translateY(-2px);
-    }
-
+    .offline-page.show { opacity: 1; visibility: visible; }
+    .offline-icon { font-size: 6rem; margin-bottom: 1.5rem; animation: float 3s ease-in-out infinite; color: #6366f1; }
+    @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
+    .offline-text { font-size: 1.4rem; font-weight: 500; color: #4b5563; max-width: 500px; margin-bottom: 2rem; line-height: 1.8; }
+    .offline-btn { background: #6366f1; color: white; border: none; padding: 0.9rem 2.5rem; border-radius: 3rem; font-family: var(--font-main); font-weight: 600; font-size: 1.1rem; cursor: pointer; transition: background 0.3s, transform 0.2s; box-shadow: 0 10px 20px rgba(99,102,241,0.3); }
+    .offline-btn:hover { background: #4f46e5; transform: translateY(-2px); }
     @media (max-width: 600px) {
       .hero h1 { font-size: 1.25rem; }
       .grid { grid-template-columns: 1fr; }
@@ -328,10 +221,13 @@
 <body>
   <div class="animated-bg" id="animatedBg"></div>
 
+  <!-- شاشة التحميل الجديدة -->
   <div class="loading-screen" id="loadingScreen">
-    <div class="loader-logo">
-      <i class="fas fa-star"></i>
-      <h2 style="font-weight:500;">أهلاً بك</h2>
+    <div class="loader-logo">A.H</div>
+    <div class="welcome-text">مرحباً بك في صفحتي الشخصية</div>
+    <div class="loading-text">جاري التحميل...</div>
+    <div class="progress-bar">
+      <div class="progress-fill"></div>
     </div>
   </div>
 
@@ -342,7 +238,6 @@
     <button class="offline-btn" id="retryConnectionBtn">إعادة المحاولة</button>
   </div>
 
-  <!-- غلاف المحتوى الأساسي -->
   <div class="main-content-wrapper" id="mainContentWrapper">
     <div class="container">
       <div class="hero">
@@ -358,9 +253,7 @@
           <p>‌طالب في جامعة القادسية / كلية القانون</p>
         </div>
       </div>
-
       <div id="sectionsContainer"></div>
-
       <footer>
         <p>© <span id="currentYear"></span> جميع الحقوق محفوظة.</p>
         <div>
@@ -371,7 +264,7 @@
     </div>
   </div>
 
-  <!-- مودالات -->
+  <!-- المودالات -->
   <div class="modal-overlay" id="privacyModal">
     <div class="modal">
       <button class="modal-close" id="closePrivacyModal"><i class="fas fa-times"></i></button>
@@ -379,46 +272,37 @@
       <p><strong>آخر تحديث: 2026/4/25</strong></p>
       <p>نحن نحترم خصوصيتك ونؤكد أن هذا الموقع هو موقع شخصي يهدف فقط إلى عرض المحتوى (مثل الحسابات، الإنجازات، والصور)، ولا يقوم بجمع أو تخزين بيانات شخصية للمستخدمين.</p>
       <ol>
-        <li><strong>عدم جمع البيانات</strong><br>لا نقوم بجمع أي معلومات شخصية مثل: الاسم، البريد الإلكتروني، رقم الهاتف. كما لا يوجد نظام تسجيل أو إدخال بيانات داخل الموقع.</li>
-        <li><strong>البيانات التقنية البسيطة</strong><br>قد يتم تلقائيًا جمع بعض المعلومات التقنية من قبل مزود الخدمة أو السيرفر، مثل: عنوان IP، نوع المتصفح، نوع الجهاز. وهذه المعلومات تُستخدم فقط لأغراض تقنية (مثل تحسين الأداء) ولا يتم استخدامها لتحديد هوية المستخدم.</li>
-        <li><strong>ملفات تعريف الارتباط (Cookies)</strong><br>هذا الموقع لا يستخدم ملفات تعريف الارتباط (Cookies) لتتبع المستخدمين.</li>
-        <li><strong>الروابط الخارجية</strong><br>قد يحتوي الموقع على روابط تؤدي إلى مواقع خارجية (مثل حسابات التواصل الاجتماعي). نحن غير مسؤولين عن سياسات الخصوصية الخاصة بهذه المواقع.</li>
-        <li><strong>حماية المستخدم</strong><br>نظرًا لعدم جمع بيانات شخصية، فإن مخاطر استخدام البيانات تكاد تكون معدومة.</li>
-        <li><strong>التعديلات</strong><br>قد يتم تحديث سياسة الخصوصية هذه من وقت لآخر، وسيتم نشر أي تغييرات في هذه الصفحة.</li>
-        <li><strong>الموافقة</strong><br>باستخدامك لهذا الموقع، فإنك توافق على هذه السياسة.</li>
+        <li><strong>عدم جمع البيانات</strong><br>لا نقوم بجمع أي معلومات شخصية.</li>
+        <li><strong>البيانات التقنية</strong><br>قد تُجمع معلومات تقنية تلقائياً من قبل المزود.</li>
+        <li><strong>ملفات تعريف الارتباط</strong><br>الموقع لا يستخدم كوكيز.</li>
+        <li><strong>الروابط الخارجية</strong><br>لسنا مسؤولين عن سياسات المواقع الأخرى.</li>
+        <li><strong>التعديلات</strong><br>قد تُحدث هذه السياسة.</li>
+        <li><strong>الموافقة</strong><br>باستخدامك الموقع توافق على هذه السياسة.</li>
       </ol>
     </div>
   </div>
-
   <div class="modal-overlay" id="termsModal">
     <div class="modal">
       <button class="modal-close" id="closeTermsModal"><i class="fas fa-times"></i></button>
       <h2>شروط الاستخدام</h2>
       <p><strong>آخر تحديث: 2026/4/25</strong></p>
-      <p>يرجى قراءة هذه الشروط بعناية قبل استخدام الموقع.</p>
       <ol>
-        <li><strong>قبول الشروط</strong><br>باستخدامك لهذا الموقع، فإنك توافق على الالتزام بهذه الشروط.</li>
-        <li><strong>استخدام الموقع</strong><br>يُستخدم الموقع لأغراض شخصية فقط. يُمنع استخدام الموقع لأي نشاط غير قانوني أو ضار.</li>
-        <li><strong>المحتوى</strong><br>جميع المحتويات المنشورة (النصوص، الصور، الإنجازات) هي ملك لصاحب الموقع. لا يجوز نسخ أو إعادة نشر المحتوى دون إذن مسبق.</li>
-        <li><strong>المسؤولية</strong><br>نحن غير مسؤولين عن أي أضرار ناتجة عن استخدام الموقع. يتم تقديم المحتوى "كما هو" بدون أي ضمانات.</li>
-        <li><strong>التعديلات</strong><br>يحق لنا تعديل هذه الشروط في أي وقت دون إشعار مسبق، ويُعتبر استمرارك باستخدام الموقع موافقة على التعديلات.</li>
-        <li><strong>إيقاف الاستخدام</strong><br>يحق لنا منع أي مستخدم يخالف الشروط من استخدام الموقع.</li>
+        <li><strong>قبول الشروط</strong></li>
+        <li><strong>استخدام شخصي فقط</strong></li>
+        <li><strong>المحتوى ملك لصاحب الموقع</strong></li>
+        <li><strong>لا ضمانات</strong></li>
+        <li><strong>لنا الحق بتعديل الشروط</strong></li>
       </ol>
     </div>
   </div>
 
-  <!-- سكريبت الحماية + التحكم بالاتصال -->
+  <!-- سكريبت الحماية -->
   <script>
     (function() {
-      // منع كلك يمين
       document.addEventListener('contextmenu', e => e.preventDefault());
-      // منع اختصارات النسخ والقص واللصق والحفظ
       document.addEventListener('keydown', function(e) {
         if (e.ctrlKey || e.metaKey) {
-          const key = e.key.toLowerCase();
-          if (['c','x','v','a','u','s','p'].includes(key)) {
-            e.preventDefault();
-          }
+          if (['c','x','v','a','u','s','p'].includes(e.key.toLowerCase())) e.preventDefault();
         }
       });
       document.addEventListener('copy', e => e.preventDefault());
@@ -426,13 +310,6 @@
       document.addEventListener('paste', e => e.preventDefault());
       document.addEventListener('dragstart', e => e.preventDefault());
       document.addEventListener('selectstart', e => e.preventDefault());
-
-      // منع سحب الصور باللمس
-      document.addEventListener('touchmove', function(e) {
-        if (e.target.tagName === 'IMG' && e.target.draggable !== false) {
-          e.preventDefault();
-        }
-      }, { passive: false });
     })();
   </script>
 
@@ -464,7 +341,7 @@
       { platform: "WhatsApp", url: "https://wa.me/9647812785053", icon: "fab fa-whatsapp", color: "#25D366" }
     ];
 
-    // ============ إدارة الاتصال ============
+    // Offline/Online management
     const offlinePage = document.getElementById('offlinePage');
     const mainWrapper = document.getElementById('mainContentWrapper');
     const retryBtn = document.getElementById('retryConnectionBtn');
@@ -473,7 +350,6 @@
       offlinePage.classList.add('show');
       mainWrapper.classList.add('offline-hidden');
     }
-
     function hideOffline() {
       offlinePage.classList.remove('show');
       mainWrapper.classList.remove('offline-hidden');
@@ -481,34 +357,25 @@
 
     window.addEventListener('offline', showOffline);
     window.addEventListener('online', hideOffline);
-
     retryBtn.addEventListener('click', () => {
-      // محاولة تحميل رابط صغير جداً لفحص الاتصال
       fetch('https://www.google.com/favicon.ico', { mode: 'no-cors', cache: 'no-store' })
-        .then(() => {
-          hideOffline();
-        })
+        .then(() => hideOffline())
         .catch(() => {
-          // لا يزال غير متصل
           offlinePage.querySelector('.offline-text').textContent = 'ما زال الاتصال مفقودًا. تأكد من تشغيل الواي فاي أو البيانات.';
           setTimeout(() => {
             offlinePage.querySelector('.offline-text').textContent = 'يبدو أنك غير متصل بالإنترنت. يرجى التحقق من الاتصال والمحاولة مرة أخرى.';
           }, 3000);
         });
     });
+    if (!navigator.onLine) showOffline();
 
-    // التحقق الأولي عند التحميل
-    if (!navigator.onLine) {
-      showOffline();
-    }
-
-    // ============ باقي المنطق ============
+    // شاشة التحميل - بعد 5 ثوانٍ تختفي
     const loadingScreen = document.getElementById('loadingScreen');
     setTimeout(() => {
-      if (loadingScreen && !loadingScreen.classList.contains('hidden')) {
+      if (loadingScreen) {
         loadingScreen.classList.add('hidden');
       }
-    }, 3000);
+    }, 5000);
 
     async function loadSiteData() {
       try {
@@ -526,10 +393,7 @@
 
     function getSocialLinks(data) {
       if (data.socialLinksOrder && data.socialLinksOrder.length === DEFAULT_SOCIAL_LINKS.length) {
-        return data.socialLinksOrder.map(platform => DEFAULT_SOCIAL_LINKS.find(l => l.platform === platform)).filter(Boolean);
-      }
-      if (data.socialLinks && data.socialLinks.length === DEFAULT_SOCIAL_LINKS.length) {
-        return data.socialLinks;
+        return data.socialLinksOrder.map(p => DEFAULT_SOCIAL_LINKS.find(l => l.platform === p)).filter(Boolean);
       }
       return DEFAULT_SOCIAL_LINKS;
     }
@@ -537,49 +401,27 @@
     function renderSections(data) {
       const container = document.getElementById('sectionsContainer');
       container.innerHTML = '';
-
-      const social = getSocialLinks(data);
-      const socialSec = document.createElement('div');
-      socialSec.className = 'social-section';
-      socialSec.innerHTML = buildSocialSection(social);
+      const socialSec = document.createElement('div'); socialSec.className = 'social-section';
+      socialSec.innerHTML = buildSocialSection(getSocialLinks(data));
       container.appendChild(socialSec);
 
-      if (data.about && data.about.content) {
+      if (data.about?.content) {
         const sec = document.createElement('div'); sec.className = 'section';
         sec.innerHTML = `<div class="section-title"><i class="fas fa-user"></i> من أنا</div><p>${data.about.content}</p>`;
         container.appendChild(sec);
       }
-
       const achievements = data.achievements || [];
       if (achievements.length) {
         const sec = document.createElement('div'); sec.className = 'section';
         sec.innerHTML = buildAchievementsSection(achievements);
         container.appendChild(sec);
       }
-
       const gallery = data.gallery || [];
       if (gallery.length) {
         const sec = document.createElement('div'); sec.className = 'section';
         sec.innerHTML = buildGallerySection(gallery);
         container.appendChild(sec);
       }
-
-      if (data.projects && data.projects.length) {
-        const sec = document.createElement('div'); sec.className = 'section';
-        sec.innerHTML = buildProjectsSection(data.projects);
-        container.appendChild(sec);
-      }
-      if (data.blog && data.blog.length) {
-        const sec = document.createElement('div'); sec.className = 'section';
-        sec.innerHTML = buildBlogSection(data.blog);
-        container.appendChild(sec);
-      }
-      if (data.products && data.products.length) {
-        const sec = document.createElement('div'); sec.className = 'section';
-        sec.innerHTML = buildStoreSection(data.products);
-        container.appendChild(sec);
-      }
-
       observeSections();
     }
 
@@ -587,44 +429,20 @@
       let html = `<div class="section-title"><i class="fas fa-share-alt"></i> حساباتي</div><div class="social-cards">`;
       links.forEach(link => {
         const style = link.color.includes('gradient') ? `background: ${link.color};` : `background: ${link.color};`;
-        const textColor = link.textColor ? `color: ${link.textColor};` : '';
-        html += `<a href="${link.url}" target="_blank" class="social-card" style="${style}${textColor}" draggable="false">
-          <i class="${link.icon}"></i> ${link.platform}
-        </a>`;
+        html += `<a href="${link.url}" target="_blank" class="social-card" style="${style}" draggable="false"><i class="${link.icon}"></i> ${link.platform}</a>`;
       });
       return html + '</div>';
     }
-
     function buildAchievementsSection(items) {
       let html = `<div class="section-title"><i class="fas fa-trophy"></i> إنجازاتي</div><div class="grid">`;
       items.forEach(a => html += `<div class="achievement-card"><h3>${a.title}</h3><p>${a.description}</p></div>`);
       return html + '</div>';
     }
-
     function buildGallerySection(items) {
       let html = `<div class="section-title"><i class="fas fa-images"></i> المعرض</div><div class="grid">`;
       items.forEach(img => html += `<div class="gallery-card"><img src="${img.imageUrl}" alt="صورة" draggable="false"><div class="gallery-info"><p>${img.description||''}</p><div class="date">${img.date||''}</div></div></div>`);
       return html + '</div>';
     }
-
-    function buildProjectsSection(items) {
-      let html = `<div class="section-title"><i class="fas fa-code"></i> المشاريع</div><div class="grid">`;
-      items.forEach(p => html += `<div style="background:var(--surface); border-radius:var(--radius-md); overflow:hidden; border:1px solid var(--border);"><img src="${p.image||'https://placehold.co/400x250/e2e8f0/6366f1?text=مشروع'}" draggable="false" style="width:100%;height:170px;object-fit:cover;"><div style="padding:1rem;"><h3>${p.title}</h3><p>${p.description}</p><a href="${p.link||'#'}" target="_blank" style="color:var(--accent);">تفاصيل</a></div></div>`);
-      return html + '</div>';
-    }
-
-    function buildBlogSection(items) {
-      let html = `<div class="section-title"><i class="fas fa-pen"></i> المدونة</div><div class="grid">`;
-      items.forEach(a => html += `<div style="background:var(--surface); border-radius:var(--radius-md); padding:1rem; border:1px solid var(--border);"><h3>${a.title}</h3><p>${(a.content||'').substring(0,80)}...</p><small>${a.date||''}</small></div>`);
-      return html + '</div>';
-    }
-
-    function buildStoreSection(products) {
-      let html = `<div class="section-title"><i class="fas fa-store"></i> المتجر</div><div class="grid">`;
-      products.forEach(p => html += `<div style="background:var(--surface); border-radius:var(--radius-md); overflow:hidden; border:1px solid var(--border);"><img src="${(p.images&&p.images[0])||'https://placehold.co/400x250/e2e8f0/6366f1?text=منتج'}" draggable="false" style="width:100%;height:170px;object-fit:cover;"><div style="padding:1rem;"><h3>${p.name}</h3><p>${p.description}</p><div style="color:var(--accent); font-weight:700;">${p.price} ريال</div></div></div>`);
-      return html + '</div>';
-    }
-
     function observeSections() {
       document.querySelectorAll('.section, .social-section').forEach(sec => {
         const observer = new IntersectionObserver((entries) => {
@@ -637,17 +455,16 @@
     function setupProfileClickEffect() {
       const img = document.getElementById('profileImage');
       if (!img) return;
-      const emojis = ['❤️', '⭐', '💜', '✨', '💙'];
       img.addEventListener('click', (e) => {
-        const count = 5 + Math.floor(Math.random() * 5);
-        for (let i = 0; i < count; i++) {
+        const emojis = ['❤️', '⭐', '💜', '✨', '💙'];
+        for (let i=0; i<5+Math.floor(Math.random()*5); i++) {
           const span = document.createElement('span');
           span.className = 'floating-emoji';
-          span.textContent = emojis[Math.floor(Math.random() * emojis.length)];
-          span.style.left = (e.clientX + (Math.random() - 0.5) * 100) + 'px';
-          span.style.top = (e.clientY + (Math.random() - 0.5) * 60) + 'px';
-          span.style.setProperty('--tx', (Math.random() - 0.5) * 120 + 'px');
-          span.style.setProperty('--ty', (Math.random() * -120 - 30) + 'px');
+          span.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+          span.style.left = (e.clientX + (Math.random()-0.5)*100) + 'px';
+          span.style.top = (e.clientY + (Math.random()-0.5)*60) + 'px';
+          span.style.setProperty('--tx', (Math.random()-0.5)*120 + 'px');
+          span.style.setProperty('--ty', (Math.random()*-120 -30) + 'px');
           document.body.appendChild(span);
           span.addEventListener('animationend', () => span.remove());
         }
@@ -662,14 +479,6 @@
         Object.assign(p.style, { width: size+'px', height: size+'px', left: Math.random()*100+'%', animationDelay: Math.random()*20+'s', animationDuration: 15+Math.random()*20+'s' });
         bg.appendChild(p);
       }
-    }
-
-    async function incrementVisitorCount() {
-      try {
-        const vRef = ref(db, 'stats/visitors');
-        const snap = await get(vRef);
-        await set(vRef, (snap.val()||0)+1);
-      } catch(e) {}
     }
 
     function setupModals() {
@@ -693,7 +502,6 @@
         const data = await loadSiteData();
         applySiteSettings(data);
         renderSections(data);
-        incrementVisitorCount();
       } catch (e) { console.error(e); }
       document.getElementById('currentYear').textContent = new Date().getFullYear();
     });
@@ -701,10 +509,7 @@
     if (db) {
       onValue(ref(db, '/'), (snapshot) => {
         const data = snapshot.val();
-        if (data) {
-          applySiteSettings(data);
-          renderSections(data);
-        }
+        if (data) { applySiteSettings(data); renderSections(data); }
       });
     }
   </script>
