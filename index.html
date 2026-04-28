@@ -37,20 +37,16 @@
       -moz-user-drag: none;
       -o-user-drag: none;
       user-drag: none;
-      pointer-events: auto; /* نسمح بالنقر للأيقونات ولكن المنع من السحب */
     }
-    /* منع ظل النص عند الضغط */
     * {
       -webkit-tap-highlight-color: transparent;
     }
-    /* منع تحديد النص في المتصفحات القديمة */
     body {
       -webkit-touch-callout: none;
-    }
-
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
       font-family: var(--font-main);
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
       background-color: var(--bg);
       color: var(--text);
       line-height: 1.7;
@@ -87,6 +83,16 @@
       100% { transform: scale(0.96); opacity: 0.7; }
     }
 
+    /* ===== المحتوى الأساسي ===== */
+    .main-content-wrapper {
+      transition: opacity 0.4s ease, visibility 0.4s ease;
+    }
+    .main-content-wrapper.offline-hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
     .container { max-width: 900px; margin: 0 auto; padding: 1.25rem; }
 
     .hero { text-align: center; padding: 2.5rem 1rem 1.5rem; }
@@ -96,9 +102,6 @@
       border: 4px solid var(--accent); box-shadow: 0 10px 25px rgba(99,102,241,0.3);
       transition: transform var(--transition);
       cursor: pointer;
-      /* نمنع السحب مرة أخرى */
-      pointer-events: auto;
-      -webkit-user-drag: none;
     }
     .profile-pic:hover { transform: scale(1.04); }
 
@@ -190,8 +193,6 @@
       min-width: 140px;
       border: 2px solid transparent;
       animation: cardGlow 4s infinite alternate;
-      user-select: none;
-      -webkit-user-drag: none;
     }
     @keyframes cardGlow {
       0% { border-color: rgba(255,255,255,0.2); box-shadow: 0 0 8px currentColor; }
@@ -257,9 +258,70 @@
       100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0.3); }
     }
 
+    /* ===== صفحة Offline ===== */
+    .offline-page {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background: #ffffff;
+      z-index: 100000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      text-align: center;
+      padding: 2rem;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.4s ease, visibility 0.4s ease;
+      color: #1f2937;
+      font-family: var(--font-main);
+    }
+    .offline-page.show {
+      opacity: 1;
+      visibility: visible;
+    }
+    .offline-icon {
+      font-size: 6rem;
+      margin-bottom: 1.5rem;
+      animation: float 3s ease-in-out infinite;
+      color: #6366f1;
+    }
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+      100% { transform: translateY(0px); }
+    }
+    .offline-text {
+      font-size: 1.4rem;
+      font-weight: 500;
+      color: #4b5563;
+      max-width: 500px;
+      margin-bottom: 2rem;
+      line-height: 1.8;
+    }
+    .offline-btn {
+      background: #6366f1;
+      color: white;
+      border: none;
+      padding: 0.9rem 2.5rem;
+      border-radius: 3rem;
+      font-family: var(--font-main);
+      font-weight: 600;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+      box-shadow: 0 10px 20px rgba(99,102,241,0.3);
+    }
+    .offline-btn:hover {
+      background: #4f46e5;
+      transform: translateY(-2px);
+    }
+
     @media (max-width: 600px) {
       .hero h1 { font-size: 1.25rem; }
       .grid { grid-template-columns: 1fr; }
+      .offline-icon { font-size: 4rem; }
+      .offline-text { font-size: 1.1rem; }
     }
   </style>
 </head>
@@ -273,30 +335,40 @@
     </div>
   </div>
 
-  <div class="container" id="mainContent">
-    <div class="hero">
-      <div class="profile-pic-wrapper" id="profilePicWrapper">
-        <img id="profileImage" src="https://placehold.co/300x300/e2e8f0/6366f1?text=😎" alt="صورتي" class="profile-pic" draggable="false">
+  <!-- صفحة Offline -->
+  <div class="offline-page" id="offlinePage">
+    <div class="offline-icon">📡</div>
+    <div class="offline-text">يبدو أنك غير متصل بالإنترنت. يرجى التحقق من الاتصال والمحاولة مرة أخرى.</div>
+    <button class="offline-btn" id="retryConnectionBtn">إعادة المحاولة</button>
+  </div>
+
+  <!-- غلاف المحتوى الأساسي -->
+  <div class="main-content-wrapper" id="mainContentWrapper">
+    <div class="container">
+      <div class="hero">
+        <div class="profile-pic-wrapper" id="profilePicWrapper">
+          <img id="profileImage" src="https://placehold.co/300x300/e2e8f0/6366f1?text=😎" alt="صورتي" class="profile-pic" draggable="false">
+        </div>
+        <div class="name-wrapper">
+          <h1 id="siteName">اسمك هنا</h1>
+        </div>
+        <div class="description-lines" id="siteDescription">
+          <p>مهتم بالشأن السياسي والفكر الديني</p>
+          <p>احد افراد التيار الوطني الشيعي</p>
+          <p>‌طالب في جامعة القادسية / كلية القانون</p>
+        </div>
       </div>
-      <div class="name-wrapper">
-        <h1 id="siteName">اسمك هنا</h1>
-      </div>
-      <div class="description-lines" id="siteDescription">
-        <p>مهتم بالشأن السياسي والفكر الديني</p>
-        <p>احد افراد التيار الوطني الشيعي</p>
-        <p>‌طالب في جامعة القادسية / كلية القانون</p>
-      </div>
+
+      <div id="sectionsContainer"></div>
+
+      <footer>
+        <p>© <span id="currentYear"></span> جميع الحقوق محفوظة.</p>
+        <div>
+          <a id="privacyLink">سياسة الخصوصية</a> |
+          <a id="termsLink">شروط الاستخدام</a>
+        </div>
+      </footer>
     </div>
-
-    <div id="sectionsContainer"></div>
-
-    <footer>
-      <p>© <span id="currentYear"></span> جميع الحقوق محفوظة.</p>
-      <div>
-        <a id="privacyLink">سياسة الخصوصية</a> |
-        <a id="termsLink">شروط الاستخدام</a>
-      </div>
-    </footer>
   </div>
 
   <!-- مودالات -->
@@ -335,58 +407,32 @@
     </div>
   </div>
 
-  <!-- ===== سكريبت الحماية ===== -->
+  <!-- سكريبت الحماية + التحكم بالاتصال -->
   <script>
     (function() {
       // منع كلك يمين
-      document.addEventListener('contextmenu', function(e) {
-        e.preventDefault();
-        return false;
-      });
-
-      // منع اختصارات النسخ والقص واللصق والتحديد وحفظ الصفحة
+      document.addEventListener('contextmenu', e => e.preventDefault());
+      // منع اختصارات النسخ والقص واللصق والحفظ
       document.addEventListener('keydown', function(e) {
         if (e.ctrlKey || e.metaKey) {
           const key = e.key.toLowerCase();
-          if (key === 'c' || key === 'x' || key === 'v' || key === 'a' || key === 'u' || key === 's' || key === 'p') {
+          if (['c','x','v','a','u','s','p'].includes(key)) {
             e.preventDefault();
-            return false;
           }
         }
       });
+      document.addEventListener('copy', e => e.preventDefault());
+      document.addEventListener('cut', e => e.preventDefault());
+      document.addEventListener('paste', e => e.preventDefault());
+      document.addEventListener('dragstart', e => e.preventDefault());
+      document.addEventListener('selectstart', e => e.preventDefault());
 
-      // منع عمليات النسخ والقص واللصق عبر الأحداث
-      document.addEventListener('copy', function(e) { e.preventDefault(); });
-      document.addEventListener('cut', function(e) { e.preventDefault(); });
-      document.addEventListener('paste', function(e) { e.preventDefault(); });
-
-      // منع سحب العناصر (خاصة الصور)
-      document.addEventListener('dragstart', function(e) {
-        e.preventDefault();
-        return false;
-      });
-
-      // منع تحديد النص (مزيد من التأكيد)
-      document.addEventListener('selectstart', function(e) {
-        e.preventDefault();
-        return false;
-      });
-
-      // منع الضغط المطول على الأجهزة اللمسية (يؤدي للنسخ أو القوائم)
-      document.addEventListener('touchstart', function(e) {
-        if (e.target.tagName === 'IMG' || e.target.tagName === 'A' || e.target.tagName === 'BUTTON') return;
-        // لا نمنع اللمس على العناصر التفاعلية لضمان عمل الأزرار والروابط
-      }, { passive: false });
-
-      // منع سحب الصور باللمس (إضافي)
+      // منع سحب الصور باللمس
       document.addEventListener('touchmove', function(e) {
         if (e.target.tagName === 'IMG' && e.target.draggable !== false) {
           e.preventDefault();
         }
       }, { passive: false });
-
-      // تعطيل جر الصور من خلال attribute
-      document.querySelectorAll('img').forEach(img => img.setAttribute('draggable', 'false'));
     })();
   </script>
 
@@ -418,8 +464,46 @@
       { platform: "WhatsApp", url: "https://wa.me/9647812785053", icon: "fab fa-whatsapp", color: "#25D366" }
     ];
 
-    const loadingScreen = document.getElementById('loadingScreen');
+    // ============ إدارة الاتصال ============
+    const offlinePage = document.getElementById('offlinePage');
+    const mainWrapper = document.getElementById('mainContentWrapper');
+    const retryBtn = document.getElementById('retryConnectionBtn');
 
+    function showOffline() {
+      offlinePage.classList.add('show');
+      mainWrapper.classList.add('offline-hidden');
+    }
+
+    function hideOffline() {
+      offlinePage.classList.remove('show');
+      mainWrapper.classList.remove('offline-hidden');
+    }
+
+    window.addEventListener('offline', showOffline);
+    window.addEventListener('online', hideOffline);
+
+    retryBtn.addEventListener('click', () => {
+      // محاولة تحميل رابط صغير جداً لفحص الاتصال
+      fetch('https://www.google.com/favicon.ico', { mode: 'no-cors', cache: 'no-store' })
+        .then(() => {
+          hideOffline();
+        })
+        .catch(() => {
+          // لا يزال غير متصل
+          offlinePage.querySelector('.offline-text').textContent = 'ما زال الاتصال مفقودًا. تأكد من تشغيل الواي فاي أو البيانات.';
+          setTimeout(() => {
+            offlinePage.querySelector('.offline-text').textContent = 'يبدو أنك غير متصل بالإنترنت. يرجى التحقق من الاتصال والمحاولة مرة أخرى.';
+          }, 3000);
+        });
+    });
+
+    // التحقق الأولي عند التحميل
+    if (!navigator.onLine) {
+      showOffline();
+    }
+
+    // ============ باقي المنطق ============
+    const loadingScreen = document.getElementById('loadingScreen');
     setTimeout(() => {
       if (loadingScreen && !loadingScreen.classList.contains('hidden')) {
         loadingScreen.classList.add('hidden');
@@ -437,9 +521,7 @@
       const siteInfo = data.siteInfo || {};
       document.getElementById('siteName').textContent = siteInfo.name || 'اسمك هنا';
       if (siteInfo.profileImage) document.getElementById('profileImage').src = siteInfo.profileImage;
-      if (siteInfo.primaryColor) {
-        document.documentElement.style.setProperty('--accent', siteInfo.primaryColor);
-      }
+      if (siteInfo.primaryColor) document.documentElement.style.setProperty('--accent', siteInfo.primaryColor);
     }
 
     function getSocialLinks(data) {
