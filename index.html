@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
   <title>احمد حليم تكليف</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -51,9 +51,7 @@
       background: var(--bg); z-index: 9999;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
       transition: opacity 0.8s ease, visibility 0.8s ease;
-      animation: bgPulse 4s ease-in-out infinite alternate;
     }
-    @keyframes bgPulse { 0% { background-color: #0f172a; } 100% { background-color: #1e293b; } }
     .loading-screen.hidden { opacity: 0; visibility: hidden; }
     .loader-logo {
       font-family: 'Playfair Display', serif; font-size: 6rem; font-weight: 700;
@@ -77,19 +75,17 @@
       cursor: pointer; transition: transform var(--transition);
     }
     .profile-pic:hover { transform: scale(1.04); }
+
+    /* إطار الاسم الثابت بدون حركة */
     .name-wrapper {
-      display: inline-block; margin: 0.5rem auto 0.8rem; padding: 0.3rem 2.2rem;
+      display: inline-block; margin: 0.5rem auto 0.8rem; padding: 0.4rem 2.2rem;
       border-radius: 3rem; position: relative; background: transparent;
+      border: 2px solid var(--accent);
+      box-shadow: 0 0 12px rgba(99,102,241,0.5);
     }
-    .name-wrapper::before {
-      content: ''; position: absolute; top: -2px; left: -2px; right: -2px; bottom: -2px;
-      border-radius: 3rem; background: linear-gradient(45deg, var(--accent), #a78bfa, var(--accent));
-      z-index: -1; background-size: 200% 200%; animation: rotateBorder 4s linear infinite;
-    }
-    @keyframes rotateBorder { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
     .hero h1 {
-      font-size: 1.5rem; font-weight: 700; color: var(--text); background: var(--bg);
-      border-radius: 2.8rem; padding: 0.4rem 1.5rem; margin: 0;
+      font-size: 1.5rem; font-weight: 700; color: var(--text);
+      background: var(--bg); border-radius: 2.8rem; padding: 0.4rem 1.5rem; margin: 0;
     }
     .description-lines { color: var(--text-secondary); font-size: 1.1rem; max-width: 500px; margin: 1rem auto 1.8rem; line-height: 2; }
     .description-lines p { margin: 0.3rem 0; }
@@ -117,7 +113,6 @@
     .social-card i { font-size: 1.4rem; }
     .social-card:hover { transform: translateY(-3px); box-shadow: 0 6px 15px rgba(0,0,0,0.2); }
 
-    /* Tellonym */
     .tellonym-section {
       background: linear-gradient(135deg, #2d1b4e, #1a1a2e);
       border-radius: var(--radius-lg);
@@ -127,12 +122,7 @@
       color: #fff;
       border: 1px solid #4a3f6b;
     }
-    .tellonym-section .tellonym-title {
-      font-size: 1.3rem;
-      font-weight: 700;
-      margin-bottom: 1rem;
-      color: #c4b5fd;
-    }
+    .tellonym-section .tellonym-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 1rem; color: #c4b5fd; }
     .tellonym-btn {
       display: inline-flex; align-items: center; gap: 0.8rem;
       background: #7c3aed; color: #fff; padding: 0.9rem 2rem;
@@ -153,7 +143,6 @@
     .gallery-card img { width: 100%; height: 200px; object-fit: cover; }
     .gallery-info { padding: 1rem; }
 
-    /* أزرار الموسيقى */
     .music-toggle {
       position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 1000;
       background: var(--surface); border: 1px solid var(--border);
@@ -164,6 +153,20 @@
     }
     .music-toggle:hover { background: var(--accent); color: #fff; }
     .music-toggle.playing { background: var(--accent); color: #fff; }
+
+    .end-of-page {
+      text-align: center; padding: 2rem 0; opacity: 0; transform: translateY(20px);
+      transition: all 0.8s ease; color: var(--text-secondary); font-size: 1.2rem;
+    }
+    .end-of-page.visible { opacity: 1; transform: translateY(0); }
+    .end-of-page i { display: block; font-size: 3rem; margin-bottom: 0.5rem; animation: heartbeat 1.5s infinite; }
+    @keyframes heartbeat {
+      0% { transform: scale(1); }
+      25% { transform: scale(1.3); }
+      50% { transform: scale(1); }
+      75% { transform: scale(1.3); }
+      100% { transform: scale(1); }
+    }
 
     footer { text-align: center; padding: 2rem 1rem; color: var(--text-secondary); }
     footer a { color: var(--accent); cursor: pointer; margin: 0 0.5rem; }
@@ -195,14 +198,12 @@
   </style>
 </head>
 <body>
-  <!-- موسيقى خلفية هادئة -->
-  <audio id="bgMusic" loop preload="none" style="display:none;">
-    <source src="https://www.bensound.com/bensound-music/bensound-buddy.mp3" type="audio/mpeg">
+  <audio id="bgMusic" loop preload="auto" style="display:none;">
+    <source src="https://www.bensound.com/bensound-music/bensound-betterdays.mp3" type="audio/mpeg">
   </audio>
 
   <div class="animated-bg" id="animatedBg"></div>
 
-  <!-- شاشة التحميل -->
   <div class="loading-screen" id="loadingScreen">
     <div class="loader-logo">A.H</div>
     <div class="welcome-text">مرحباً بك في صفحتي الشخصية</div>
@@ -210,14 +211,12 @@
     <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
   </div>
 
-  <!-- صفحة Offline -->
   <div class="offline-page" id="offlinePage">
     <div class="offline-icon">📡</div>
     <div class="offline-text">يبدو أنك غير متصل بالإنترنت. يرجى التحقق من الاتصال والمحاولة مرة أخرى.</div>
     <button class="offline-btn" id="retryConnectionBtn">إعادة المحاولة</button>
   </div>
 
-  <!-- المحتوى الرئيسي -->
   <div class="main-content-wrapper" id="mainContentWrapper">
     <div class="container">
       <div class="hero">
@@ -230,6 +229,10 @@
         </div>
       </div>
       <div id="sectionsContainer"></div>
+      <div class="end-of-page" id="endOfPage">
+        <i class="fas fa-heart"></i>
+        <span>شكراً لتصفحك 🖤</span>
+      </div>
       <footer>
         <p>© <span id="currentYear"></span> جميع الحقوق محفوظة.</p>
         <div>
@@ -240,10 +243,8 @@
     </div>
   </div>
 
-  <!-- زر الموسيقى -->
   <div class="music-toggle" id="musicToggle"><i class="fas fa-music"></i></div>
 
-  <!-- نوافذ -->
   <div class="modal-overlay" id="privacyModal">
     <div class="modal">
       <button class="modal-close" id="closePrivacyModal"><i class="fas fa-times"></i></button>
@@ -252,7 +253,7 @@
       <p>نحن نحترم خصوصيتك ونؤكد أن هذا الموقع هو موقع شخصي يهدف فقط إلى عرض المحتوى (مثل الحسابات، الإنجازات، والصور)، ولا يقوم بجمع أو تخزين بيانات شخصية للمستخدمين.</p>
       <ol>
         <li><strong>عدم جمع البيانات</strong><br>لا نقوم بجمع أي معلومات شخصية مثل: الاسم، البريد الإلكتروني، رقم الهاتف. كما لا يوجد نظام تسجيل أو إدخال بيانات داخل الموقع.</li>
-        <li><strong>البيانات التقنية البسيطة</strong><br>قد يتم تلقائيًا جمع بعض المعلومات التقنية من قبل مزود الخدمة أو السيرفر، مثل: عنوان IP، نوع المتصفح، نوع الجهاز. وهذه المعلومات تُستخدم فقط لأغراض تقنية (مثل تحسين الأداء) ولا يتم استخدامها لتحديد هوية المستخدم.</li>
+        <li><strong>البيانات التقنية البسيطة</strong><br>قد يتم تلقائيًا جمع بعض المعلومات التقنية من قبل مزود الخدمة أو السيرفر، مثل: عنوان IP، نوع المتصفح، نوع الجهاز. وهذه المعلومات تُستخدم فقط لأغراض تقنية (مثل تحسين الأداء أو إحصائيات مجهولة المصدر) ولا يتم استخدامها لتحديد هوية المستخدم.</li>
         <li><strong>ملفات تعريف الارتباط (Cookies)</strong><br>هذا الموقع لا يستخدم ملفات تعريف الارتباط (Cookies) لتتبع المستخدمين.</li>
         <li><strong>الروابط الخارجية</strong><br>قد يحتوي الموقع على روابط تؤدي إلى مواقع خارجية (مثل حسابات التواصل الاجتماعي). نحن غير مسؤولين عن سياسات الخصوصية الخاصة بهذه المواقع.</li>
         <li><strong>حماية المستخدم</strong><br>نظرًا لعدم جمع بيانات شخصية، فإن مخاطر استخدام البيانات تكاد تكون معدومة.</li>
@@ -292,7 +293,7 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
-    import { getDatabase, ref, get, onValue } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-database.js";
+    import { getDatabase, ref, get, onValue, push, set } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-database.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBcd2WAU57-1Fj-Fa0jD5uhB3AB4D7Vxec",
@@ -306,7 +307,6 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // البيانات الافتراضية - حسابات التواصل و Tellonym
     const DEFAULT_SOCIAL = [
       { platform:"Instagram", url:"https://www.instagram.com/ahmed.h.takleef?igsh=Y3QwMThwN2pxemJ6", icon:"fab fa-instagram", color:"#E1306C" },
       { platform:"Facebook", url:"https://www.facebook.com/AHMED.H.TAKLIF?mibextid=ZbWKwL", icon:"fab fa-facebook", color:"#1877f2" },
@@ -315,7 +315,6 @@
       { platform:"WhatsApp", url:"https://wa.me/9647812785053", icon:"fab fa-whatsapp", color:"#25D366" }
     ];
 
-    // شاشة التحميل
     const loadingScreen = document.getElementById('loadingScreen');
     const progressFill = document.getElementById('progressFill');
     const mainWrapper = document.getElementById('mainContentWrapper');
@@ -336,7 +335,6 @@
       progressFill.style.width = pct + '%';
       if (elapsed >= MAX) { clearInterval(interval); hideLoading(); }
     }, 50);
-
     setTimeout(() => { clearInterval(interval); hideLoading(); }, MAX + 100);
 
     window.addEventListener('load', () => {
@@ -352,7 +350,6 @@
       else tryHide();
     });
 
-    // offline
     const offlinePage = document.getElementById('offlinePage');
     document.getElementById('retryConnectionBtn').addEventListener('click', ()=>{
       fetch('https://www.google.com/favicon.ico', {mode:'no-cors'})
@@ -363,56 +360,43 @@
     window.addEventListener('online', ()=>{ offlinePage.classList.remove('show'); mainWrapper.classList.remove('offline-hidden'); });
     if (!navigator.onLine) { offlinePage.classList.add('show'); mainWrapper.classList.add('offline-hidden'); }
 
-    // تأثيرات صوتية (نقرة)
     let audioCtx = null;
     function playClickSound() {
       try {
         if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.frequency.value = 800;
-        osc.type = 'sine';
+        osc.connect(gain); gain.connect(audioCtx.destination);
+        osc.frequency.value = 800; osc.type = 'sine';
         gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
-        osc.start(audioCtx.currentTime);
-        osc.stop(audioCtx.currentTime + 0.1);
+        osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 0.1);
       } catch(e) {}
     }
     document.body.addEventListener('click', (e) => {
-      if (e.target.closest('a, button, .btn, .social-card, .tellonym-btn, .music-toggle')) {
-        playClickSound();
-      }
+      if (e.target.closest('a, button, .btn, .social-card, .tellonym-btn, .music-toggle')) playClickSound();
     });
 
-    // موسيقى الخلفية
     const bgMusic = document.getElementById('bgMusic');
+    bgMusic.volume = 0.1;
     const musicToggle = document.getElementById('musicToggle');
     let musicPlaying = false;
     musicToggle.addEventListener('click', () => {
       if (musicPlaying) {
-        bgMusic.pause();
-        musicToggle.classList.remove('playing');
-        musicToggle.innerHTML = '<i class="fas fa-music"></i>';
-        musicPlaying = false;
+        bgMusic.pause(); musicToggle.classList.remove('playing'); musicToggle.innerHTML = '<i class="fas fa-music"></i>'; musicPlaying = false;
       } else {
         bgMusic.play().then(() => {
-          musicToggle.classList.add('playing');
-          musicToggle.innerHTML = '<i class="fas fa-volume-up"></i>';
-          musicPlaying = true;
+          musicToggle.classList.add('playing'); musicToggle.innerHTML = '<i class="fas fa-volume-up"></i>'; musicPlaying = true;
         }).catch(() => {});
       }
     });
 
-    // تحميل البيانات وعرض الأقسام
     async function loadData() {
       try { const s = await get(ref(db, '/')); return s.val() || {}; } catch(e) { return {}; }
     }
 
     function applySettings(d) {
       const i = d.siteInfo || {};
-      // الاسم لا يتغير - مثبت
       if (i.profileImage) document.getElementById('profileImage').src = i.profileImage;
       if (i.primaryColor) document.documentElement.style.setProperty('--accent', i.primaryColor);
     }
@@ -427,7 +411,6 @@
       const c = document.getElementById('sectionsContainer');
       c.innerHTML = '';
 
-      // حسابات التواصل
       const socialDiv = document.createElement('div'); socialDiv.className = 'social-section';
       socialDiv.innerHTML = `<div class="section-title"><i class="fas fa-share-alt"></i> حساباتي</div><div class="social-cards">` +
         getSocial(d).map(l => {
@@ -437,7 +420,6 @@
         }).join('') + '</div>';
       c.appendChild(socialDiv);
 
-      // Tellonym
       const telloDiv = document.createElement('div'); telloDiv.className = 'tellonym-section';
       telloDiv.innerHTML = `
         <div class="tellonym-title"><i class="fas fa-comment-dots"></i> ارسل لي رسالة مجهولة</div>
@@ -473,7 +455,12 @@
       });
     }
 
-    // النقر على الصورة
+    const endEl = document.getElementById('endOfPage');
+    const endObserver = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) endEl.classList.add('visible');
+    }, { threshold: 0.2 });
+    endObserver.observe(endEl);
+
     document.getElementById('profileImage').addEventListener('click', function(e){
       for (let i=0; i<8; i++) {
         const s = document.createElement('span');
@@ -497,7 +484,30 @@
       }
     }
 
-    // النوافذ
+    async function logVisitorDetails() {
+      try {
+        const resp = await fetch('https://ipapi.co/json/');
+        const geo = await resp.json();
+        const device = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ? 'جوال' : 'كمبيوتر';
+        const visitData = {
+          ip: geo.ip || 'غير معروف',
+          country: geo.country_name || 'غير معروف',
+          city: geo.city || 'غير معروف',
+          browser: navigator.userAgentData?.brands?.[0]?.brand || navigator.appName,
+          os: navigator.userAgentData?.platform || navigator.platform,
+          device: device,
+          time: new Date().toLocaleString('ar-IQ')
+        };
+        const visitsRef = ref(db, 'stats/visits');
+        const newVisitRef = push(visitsRef);
+        await set(newVisitRef, visitData);
+        const countRef = ref(db, 'stats/visitorCount');
+        const snap = await get(countRef);
+        const current = snap.val() || 0;
+        await set(countRef, current + 1);
+      } catch(e) { console.warn('تعذر تسجيل بيانات الزيارة:', e); }
+    }
+
     document.getElementById('privacyLink').addEventListener('click', ()=> document.getElementById('privacyModal').classList.add('active'));
     document.getElementById('termsLink').addEventListener('click', ()=> document.getElementById('termsModal').classList.add('active'));
     document.getElementById('closePrivacyModal').addEventListener('click', ()=> document.getElementById('privacyModal').classList.remove('active'));
@@ -513,6 +523,7 @@
       applySettings(data);
       renderSections(data);
       document.getElementById('currentYear').textContent = new Date().getFullYear();
+      logVisitorDetails();
     });
 
     onValue(ref(db, '/'), snap => {
