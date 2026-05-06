@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>موقعي الشخصي</title>
+  <title>احمد حليم تكليف</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
@@ -105,7 +105,6 @@
 
     .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 1.3rem; }
 
-    /* قسم التواصل - كلاسيكي بدون glow */
     .social-section { background: #ede9fe; border-radius: var(--radius-lg); padding: 1.8rem; margin: 1.5rem 0; color: #1f2937; }
     .social-section .section-title { border-bottom-color: #c4b5fd; color: #4c1d95; }
     .social-cards { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; }
@@ -118,6 +117,32 @@
     .social-card i { font-size: 1.4rem; }
     .social-card:hover { transform: translateY(-3px); box-shadow: 0 6px 15px rgba(0,0,0,0.2); }
 
+    /* Tellonym */
+    .tellonym-section {
+      background: linear-gradient(135deg, #2d1b4e, #1a1a2e);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      margin: 1rem 0;
+      text-align: center;
+      color: #fff;
+      border: 1px solid #4a3f6b;
+    }
+    .tellonym-section .tellonym-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      color: #c4b5fd;
+    }
+    .tellonym-btn {
+      display: inline-flex; align-items: center; gap: 0.8rem;
+      background: #7c3aed; color: #fff; padding: 0.9rem 2rem;
+      border-radius: 3rem; text-decoration: none; font-weight: 600;
+      font-size: 1.1rem; transition: all 0.3s;
+      border: 2px solid #a78bfa;
+    }
+    .tellonym-btn:hover { background: #6d28d9; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(124,58,237,0.4); }
+    .tellonym-btn i { font-size: 1.5rem; }
+
     .achievement-card {
       background: linear-gradient(145deg, rgba(99,102,241,0.12), transparent);
       border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1.4rem;
@@ -128,10 +153,21 @@
     .gallery-card img { width: 100%; height: 200px; object-fit: cover; }
     .gallery-info { padding: 1rem; }
 
+    /* أزرار الموسيقى */
+    .music-toggle {
+      position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 1000;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 50%; width: 46px; height: 46px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: 1.3rem; color: var(--text);
+      box-shadow: var(--shadow-md); transition: all 0.3s;
+    }
+    .music-toggle:hover { background: var(--accent); color: #fff; }
+    .music-toggle.playing { background: var(--accent); color: #fff; }
+
     footer { text-align: center; padding: 2rem 1rem; color: var(--text-secondary); }
     footer a { color: var(--accent); cursor: pointer; margin: 0 0.5rem; }
 
-    /* نوافذ منبثقة */
     .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 10000; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: 0.3s; }
     .modal-overlay.active { opacity: 1; visibility: visible; }
     .modal { background: var(--surface); color: var(--text); border-radius: var(--radius-lg); padding: 2rem; max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto; position: relative; text-align: right; }
@@ -141,7 +177,6 @@
     .modal ol { padding-right: 1.2rem; }
     .modal ol li { margin-bottom: 1.2rem; }
 
-    /* صفحة Offline */
     .offline-page {
       position: fixed; inset: 0; background: #fff; z-index: 100000; display: flex;
       align-items: center; justify-content: center; flex-direction: column; text-align: center;
@@ -155,10 +190,16 @@
     @media (max-width: 600px) {
       .hero h1 { font-size: 1.25rem; }
       .grid { grid-template-columns: 1fr; }
+      .music-toggle { bottom: 1rem; right: 1rem; }
     }
   </style>
 </head>
 <body>
+  <!-- موسيقى خلفية هادئة -->
+  <audio id="bgMusic" loop preload="none" style="display:none;">
+    <source src="https://www.bensound.com/bensound-music/bensound-buddy.mp3" type="audio/mpeg">
+  </audio>
+
   <div class="animated-bg" id="animatedBg"></div>
 
   <!-- شاشة التحميل -->
@@ -181,7 +222,7 @@
     <div class="container">
       <div class="hero">
         <img id="profileImage" src="https://placehold.co/300x300/e2e8f0/6366f1?text=😎" alt="صورتي" class="profile-pic" draggable="false">
-        <div class="name-wrapper"><h1 id="siteName">اسمك هنا</h1></div>
+        <div class="name-wrapper"><h1 id="siteName">احمد حليم تكليف</h1></div>
         <div class="description-lines" id="siteDescription">
           <p>مهتم بالشأن السياسي والفكر الديني</p>
           <p>احد افراد التيار الوطني الشيعي</p>
@@ -199,7 +240,10 @@
     </div>
   </div>
 
-  <!-- نافذة سياسة الخصوصية -->
+  <!-- زر الموسيقى -->
+  <div class="music-toggle" id="musicToggle"><i class="fas fa-music"></i></div>
+
+  <!-- نوافذ -->
   <div class="modal-overlay" id="privacyModal">
     <div class="modal">
       <button class="modal-close" id="closePrivacyModal"><i class="fas fa-times"></i></button>
@@ -217,8 +261,6 @@
       </ol>
     </div>
   </div>
-
-  <!-- نافذة شروط الاستخدام -->
   <div class="modal-overlay" id="termsModal">
     <div class="modal">
       <button class="modal-close" id="closeTermsModal"><i class="fas fa-times"></i></button>
@@ -264,6 +306,7 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
+    // البيانات الافتراضية - حسابات التواصل و Tellonym
     const DEFAULT_SOCIAL = [
       { platform:"Instagram", url:"https://www.instagram.com/ahmed.h.takleef?igsh=Y3QwMThwN2pxemJ6", icon:"fab fa-instagram", color:"#E1306C" },
       { platform:"Facebook", url:"https://www.facebook.com/AHMED.H.TAKLIF?mibextid=ZbWKwL", icon:"fab fa-facebook", color:"#1877f2" },
@@ -272,6 +315,7 @@
       { platform:"WhatsApp", url:"https://wa.me/9647812785053", icon:"fab fa-whatsapp", color:"#25D366" }
     ];
 
+    // شاشة التحميل
     const loadingScreen = document.getElementById('loadingScreen');
     const progressFill = document.getElementById('progressFill');
     const mainWrapper = document.getElementById('mainContentWrapper');
@@ -319,13 +363,56 @@
     window.addEventListener('online', ()=>{ offlinePage.classList.remove('show'); mainWrapper.classList.remove('offline-hidden'); });
     if (!navigator.onLine) { offlinePage.classList.add('show'); mainWrapper.classList.add('offline-hidden'); }
 
+    // تأثيرات صوتية (نقرة)
+    let audioCtx = null;
+    function playClickSound() {
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.frequency.value = 800;
+        osc.type = 'sine';
+        gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
+        osc.start(audioCtx.currentTime);
+        osc.stop(audioCtx.currentTime + 0.1);
+      } catch(e) {}
+    }
+    document.body.addEventListener('click', (e) => {
+      if (e.target.closest('a, button, .btn, .social-card, .tellonym-btn, .music-toggle')) {
+        playClickSound();
+      }
+    });
+
+    // موسيقى الخلفية
+    const bgMusic = document.getElementById('bgMusic');
+    const musicToggle = document.getElementById('musicToggle');
+    let musicPlaying = false;
+    musicToggle.addEventListener('click', () => {
+      if (musicPlaying) {
+        bgMusic.pause();
+        musicToggle.classList.remove('playing');
+        musicToggle.innerHTML = '<i class="fas fa-music"></i>';
+        musicPlaying = false;
+      } else {
+        bgMusic.play().then(() => {
+          musicToggle.classList.add('playing');
+          musicToggle.innerHTML = '<i class="fas fa-volume-up"></i>';
+          musicPlaying = true;
+        }).catch(() => {});
+      }
+    });
+
+    // تحميل البيانات وعرض الأقسام
     async function loadData() {
       try { const s = await get(ref(db, '/')); return s.val() || {}; } catch(e) { return {}; }
     }
 
     function applySettings(d) {
       const i = d.siteInfo || {};
-      document.getElementById('siteName').textContent = i.name || 'اسمك هنا';
+      // الاسم لا يتغير - مثبت
       if (i.profileImage) document.getElementById('profileImage').src = i.profileImage;
       if (i.primaryColor) document.documentElement.style.setProperty('--accent', i.primaryColor);
     }
@@ -339,7 +426,8 @@
     function renderSections(d) {
       const c = document.getElementById('sectionsContainer');
       c.innerHTML = '';
-      // social
+
+      // حسابات التواصل
       const socialDiv = document.createElement('div'); socialDiv.className = 'social-section';
       socialDiv.innerHTML = `<div class="section-title"><i class="fas fa-share-alt"></i> حساباتي</div><div class="social-cards">` +
         getSocial(d).map(l => {
@@ -348,6 +436,16 @@
           return `<a href="${l.url}" target="_blank" class="social-card" style="${bg}${tc}"><i class="${l.icon}"></i> ${l.platform}</a>`;
         }).join('') + '</div>';
       c.appendChild(socialDiv);
+
+      // Tellonym
+      const telloDiv = document.createElement('div'); telloDiv.className = 'tellonym-section';
+      telloDiv.innerHTML = `
+        <div class="tellonym-title"><i class="fas fa-comment-dots"></i> ارسل لي رسالة مجهولة</div>
+        <a href="https://tellonym.me/Ahmed.H.Takleef/dontthink" target="_blank" class="tellonym-btn">
+          <i class="fas fa-paper-plane"></i> اكتب رسالتك الآن
+        </a>
+      `;
+      c.appendChild(telloDiv);
 
       if (d.about?.content) {
         const sec = document.createElement('div'); sec.className = 'section';
@@ -366,7 +464,8 @@
           d.gallery.map(img => `<div class="gallery-card"><img src="${img.imageUrl}" draggable="false"><div class="gallery-info"><p>${img.description||''}</p><small>${img.date||''}</small></div></div>`).join('') + '</div>';
         c.appendChild(sec);
       }
-      document.querySelectorAll('.section, .social-section').forEach(sec => {
+
+      document.querySelectorAll('.section, .social-section, .tellonym-section').forEach(sec => {
         const obs = new IntersectionObserver(entries => {
           entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
         }, { threshold: 0.15 });
@@ -374,7 +473,7 @@
       });
     }
 
-    // profile click effect
+    // النقر على الصورة
     document.getElementById('profileImage').addEventListener('click', function(e){
       for (let i=0; i<8; i++) {
         const s = document.createElement('span');
@@ -398,7 +497,7 @@
       }
     }
 
-    // modals
+    // النوافذ
     document.getElementById('privacyLink').addEventListener('click', ()=> document.getElementById('privacyModal').classList.add('active'));
     document.getElementById('termsLink').addEventListener('click', ()=> document.getElementById('termsModal').classList.add('active'));
     document.getElementById('closePrivacyModal').addEventListener('click', ()=> document.getElementById('privacyModal').classList.remove('active'));
